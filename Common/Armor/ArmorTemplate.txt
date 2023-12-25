@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+
+namespace SwapLunarArmor.Common.Armor
+{
+    public class ArmorName : ModSystem
+    {
+        readonly int[] LunarSet = { ItemID.ArmorHelmOne, ItemID.ArmorHelmTwo, ItemID.ArmorHelmThree, ItemID.ArmorHelmFour, ... etc};
+        public static RecipeGroup ArmorHelmets, ArmorBreastplates, ArmorLeggings;
+        public static List<KeyValuePair<string, RecipeGroup>> ArmorGroups = new List<KeyValuePair<string, RecipeGroup>>
+        {
+            new KeyValuePair<string, RecipeGroup>("ArmorHelmets", ArmorHelmets),
+            new KeyValuePair<string, RecipeGroup>("ArmorBreastplates", ArmorBreastplates),
+            new KeyValuePair<string, RecipeGroup>("ArmorLeggings", ArmorLeggings)
+            ... etc
+        };
+        public override void AddRecipeGroups()
+        {
+            string legacyText = Language.GetTextValue("LegacyMisc.37");
+
+            for (int i = 0; i < ArmorGroups.Count; i++)
+            {
+                ArmorGroups[i] = new KeyValuePair<string, RecipeGroup>(ArmorGroups[i].Key, new RecipeGroup(() => $"{legacyText} {Lang.GetItemNameValue(ArmorGroups[0] + i)}", ArmorGroups[0] + i, ArmorGroups[1] + i, ArmorGroups[2] + i, ArmorGroups[3] + i, ... etc));
+                RecipeGroup.RegisterGroup(ArmorGroups[i].Key, ArmorGroups[i].Value);
+            }
+        }
+        private void CreateAndRegisterRecipe(int itemId, RecipeGroup group)
+        {
+            Recipe recipe = Recipe.Create(itemId, 1);
+            recipe.AddRecipeGroup(group, 1);
+            // recipe.AddTile(TileID.);
+            recipe.Register();
+        }
+        private RecipeGroup GetRecipeGroup(int index)
+        {
+            return ArmorGroups[index].Value;
+        }
+        public override void AddRecipes()
+        {
+            foreach (int ArmorSet in ArmorSet)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    CreateAndRegisterRecipe(ArmorSet + i, GetRecipeGroup(i));
+                }
+            }
+        }
+    }
+}

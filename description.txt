@@ -1,0 +1,1 @@
+Allows you to swap Lunar Armor sets at the ancient manipulator. There are future plans for more armor sets.

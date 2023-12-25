@@ -1,0 +1,3 @@
+displayName = SwapLunarArmor
+author = Akoni
+version = 0.1
